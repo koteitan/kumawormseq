@@ -25,8 +25,9 @@
 <p>
 <form id="form">
 <textarea style="width:100%" rows=10 id="in">0,1,1,0,1,0,1,1</textarea><br>
-<input type=button value="expand" onclick="javascript:doexpand();">
-<input type=button value="expand continuously" onclick="javascript:doexpandcont();">
+<input type=button value="expand" onclick="javascript:doexpandcont();">
+<input type=button value="expand detail" onclick="javascript:doexpanddetail();">
+<input type=button value="expand multiple" onclick="javascript:doexpand();">
  with bracket <input id=bracket type=input value="2"/><br>
 <textarea style="width:100%"rows=10 id="out">0,1,1,0,1,0,1,1</textarea><br>
 </form>
@@ -49,6 +50,26 @@ var doexpand=function(){
     var e=expand(a,t);
     form.out.value+=e.toString()+"\n";
   }
+}
+
+var doexpanddetail=function(){
+  var line=form.in.value.split("\n");
+  var a=JSON.parse("["+line[line.length-1]+"]");
+  var t=JSON.parse(form.bracket.value);
+  var [e,i0,j0,j1,b]=expanddetail(a,t);
+  form.in.value+="\n";
+  if(j0>=0){
+    for(var i=0;i<i0;i++) form.in.value+=" ".repeat(a[i].toString().length+1);
+    form.in.value+="i0\n";
+    for(var i=0;i<j0;i++) form.in.value+=" ".repeat(a[i].toString().length+1);
+    form.in.value+="j0\n";
+    for(var i=0;i<j1;i++) form.in.value+=" ".repeat(a[i].toString().length+1);
+    form.in.value+="j1\n";
+    for(var i=0;i<j1+1;i++) form.in.value+=" ".repeat(a[i].toString().length+1);
+    form.in.value+=b.toString()+" = bad part\n";
+  }
+  form.in.value+=e.toString();
+  form.in.scrollTop = form.in.scrollHeight;
 }
 
 var doexpandcont=function(){
