@@ -114,4 +114,64 @@ var largenumber=function(){
        0,1,1,0,1--------- good part
        0,1,1,0,1[0,1,0][0,1,0][0,1,0] --- output
     */
+/* Expantion rule of [1] */
+var expanddetail=function(a,t){
+  var n=a.length;
+  if(n==0){
+    return [[],-1,-1,-1]; /* rule 1. */
+  }else if(a[n-1]==0){
+    return [a.slice(0,n-1),-1,-1,-1]; /* rule 1-1. */
+  }else{
+    /*rule 1-2-*. ---------------------------*/
+    var i0=-1; /* child root */
+    for(var i=n-2;i>=0;i--){
+      if(a[i]<a[n-1]){
+        i0=i;
+        break;
+      }
+    }
+    /* finding good part and bad part. ------*/
+    var g; /* good part */
+    var b; /* bad part */
+    if(i<0){/* child root not found */
+      /* rule 1-2-2. */
+      g=[a[0]];
+      g0=0;
+      b=a.slice(1);
+      b[b.length-1]--;
+    }else{/* child root found */
+      j0=-1; /* bad root */
+      for(var j=i0-1;j>=0;j--){
+        if(a[j]==a[i0] && compare(a.slice(j), a.slice(i0))<0){
+          j0=j;
+          break;
+        }
+      }
+      if(j0<0){ /* j0 not found */
+        /* rule 1-2-1-2. */
+        g=[a[0]];
+        b=a.slice(1);
+        b[b.length-1]--;
+      }else{ /* j0 found */
+        var j1=-1;
+        for(var jd=j0+1;jd<=i0;jd++){
+          if(a[jd]==a[i0]){
+            j1=jd;
+            break;
+          }
+        }
+        /* rule 1-2-1-1. */
+        g=a.slice(0,j1+1);
+        b=a.slice(j1+1,n);
+        b[b.length-1]--;
+      }
+    }
+    var e=g;
+    for(k=0;k<t;k++){
+      e=e.concat(b);
+    }
+    return [e,i0,j0,j1,b];
+  }
+}
+
 
